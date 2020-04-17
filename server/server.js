@@ -1,5 +1,9 @@
 require('./config/config');
+
+
 const express = require('express');
+const mongoose = require('mongoose');
+
 const app = express();
 const bodyParser = require('body-parser');
 
@@ -9,36 +13,14 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
+app.use(require('./routes/usuario'));
 
-app.get('/', (req,res)=>{
-    res.send('Hola mundo');
-});
+mongoose.connect(process.env.URLDB,
+                {useNewUrlParser: true,useCreateIndex: true, useUnifiedTopology: true},
+                (err, res)=>{
+    if(err) throw err;
 
-app.get('/usuario', (req,res)=>{
-    res.send('peticion get');
-});
-
-app.post('/usuario', (req,res)=>{
-
-    let body = req.body;
-
-    res.json({
-        informacion: body
-    });
-
-});
-
-app.put('/usuario/:id', (req,res)=>{
-
-    let id = req.params.id;
-
-    res.json({
-        id
-    });
-});
-
-app.delete('/usuario ', (req,res)=>{
-    res.send('peticion delete');
+    console.log('Database online');
 });
 
 app.listen(process.env.PORT,()=>{
